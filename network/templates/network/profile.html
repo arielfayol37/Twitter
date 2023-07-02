@@ -1,0 +1,32 @@
+<!-- network: profile.html -->
+
+{% extends 'network/layout.html' %}
+{% block body %}
+    <h1>{{ profile_user.username }}'s Profile</h1>
+    <p>Followers: {{ profile_user.followers.count }}</p>
+    <p>Following: {{ profile_user.following.count }}</p>
+    {% if user != profile_user %}
+        {% if is_following %}
+            <button class="unfollow-button" data-username="{{ profile_user.username }}">Unfollow</button>
+        {% else %}
+            <button class="follow-button" data-username="{{ profile_user.username }}">Follow</button>
+        {% endif %}
+    {% endif %}
+
+    <!-- User's Posts -->
+    <ul>
+        {% for post in posts %}
+            <li>
+                <strong>{{ post.user.username }}</strong>
+                <p>{{ post.content }}</p>
+                <p>Likes: <span class="like-count">{{ post.num_likes }}</span></p>
+                {% if post in user.liked_posts %}
+                    <button class="unlike-button" data-post-id="{{ post.id }}">Unlike</button>
+                {% else %}
+                    <button class="like-button" data-post-id="{{ post.id }}">Like</button> 
+                {% endif %}   
+            </li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}

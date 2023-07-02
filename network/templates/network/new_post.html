@@ -1,0 +1,17 @@
+<!--New Post Html-->
+{% extends 'network/layout.html' %}
+
+{% block body %}
+<!-- if the user is authenticated, then they can post-->
+    {% if user.is_authenticated %}
+    <form action="{% url 'network:new_post'%}" method="post">
+        {% csrf_token %}
+        <h3>New Post</h3>
+        {{form}}
+        <div>
+            <input type="submit" value="Post">
+        </div>
+        
+    </form>
+    {% endif %}
+{% endblock %}

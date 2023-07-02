@@ -1,5 +1,22 @@
+<!-- network: index.html -->
 {% extends "network/layout.html" %}
 
 {% block body %}
-    TODO
+    {% if user.is_authenticated %}
+    <a href="{% url 'network:new_post' %}"><input type="submit" value="New Post"></button></a>
+    {% endif %}
+    {% for post in posts%}
+        <li>
+            <strong>{{ post.user.username }}</strong>
+            <p>{{ post.content }}</p>
+            <p>Likes: <span class="like-count">{{ post.num_likes }} </span></p>
+            {% if post in user.liked_posts.all %}
+                <button class="like-button" data-post-id="{{ post.id }}">Unlike</button>
+            {% else %}
+                <button class="like-button" data-post-id="{{ post.id }}">Like</button> 
+            {% endif %}   
+        </li>
+    {% endfor %}
+    
+    
 {% endblock %}
