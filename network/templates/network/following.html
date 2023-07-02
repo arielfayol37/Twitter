@@ -6,17 +6,8 @@
 
     <!-- Posts List -->
     <ul>
-        {% for post in posts %}
-            <li>
-                <strong>{{ post.user.username }}</strong>
-                <p>{{ post.content }}</p>
-                <p>Likes: {{ post.like_count }}</p>
-                {% if post in user.liked_posts %}
-                    <button class="unlike-button" data-post-id="{{ post.id }}">Unlike</button>
-                {% else %}
-                    <button class="like-button" data-post-id="{{ post.id }}">Like</button> 
-                {% endif %}   
-            </li>
+        {% for post in posts%}
+            {% include 'network/post_display.html' with post=post user=user %}
         {% endfor %}
     </ul>
 {% endblock %}

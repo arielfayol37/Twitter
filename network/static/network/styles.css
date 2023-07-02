@@ -1,0 +1,35 @@
+.post-li {
+    background-color: #f5f5f5;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.post-li strong {
+    font-weight: bold;
+}
+
+.post-li p {
+    margin-bottom: 5px;
+}
+
+.post-li .like-count {
+    font-weight: bold;
+}
+
+.post-li button {
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.post-li button.like-button {
+    background-color: #4CAF50;
+}
+
+.post-li button.unlike-button {
+    background-color: #f44336;
+}
