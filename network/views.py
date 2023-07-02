@@ -1,3 +1,4 @@
+import json
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden
 from django.contrib.auth import authenticate, login, logout
@@ -97,7 +98,7 @@ def profile(request, username):
     return render(request, 'network/profile.html', {
         'profile_user': profile_user,
         'posts': posts,
-        'is_following': is_following
+        'is_following': bool(is_following)
     })
 
 
@@ -147,12 +148,12 @@ def following(request):
 @login_required(login_url='network:login')
 def new_post(request):
     if request.method == "POST":
-        form = newPostForm(request.POST)
+        form = newPostForm(request.POST, request.FILES)  # Include request.FILES in the form initialization
         if form.is_valid():
             post = form.save(commit=False)
             post.user = request.user
             post.save()
-            messages.success(request, 'post created successfully.')
+            messages.success(request, 'Post created successfully.')
             return redirect('network:index')
         else:
             messages.error(request, 'There was an error with your submission.')
@@ -163,25 +164,55 @@ def new_post(request):
 
 @login_required(login_url='network:login')
 @csrf_exempt
+def modify_post(request, post_id):
+    if request.method == 'POST':
+        try:
+            post = Post.objects.get(id=post_id)
+            if request.user != post.user:
+                return HttpResponseForbidden("You are not authorized to modify this post.")
+            data = json.loads(request.body)
+            # Retrieve the updated content from the request body
+            content = data.get('content', '')
+
+            # Update the post content
+            post.content = content
+            post.save()
+
+            # Return a JSON response indicating the success
+            return JsonResponse({'success': True})
+        except Post.DoesNotExist:
+            # Return a JSON response indicating the failure
+            return JsonResponse({'success': False, 'error': 'Post not found'})
+    
+    # Return a JSON response indicating the incorrect HTTP method
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+@login_required(login_url='network:login')
+@csrf_exempt
 def follow_unfollow_user(request, username):
     target_user = User.objects.get(username=username)
     if request.method == 'POST':
         user = request.user
+
         # Definitely not the best way to go about it but anyways
-        try:
-            follower = Follower.objects.get(user=user, followed_user=target_user)
-            follower.delete()
-            following = False
-        except Like.DoesNotExist:
-            follower = Follower(user=user, followed_user=target_user)
-            follower.save()
-            following = True
+        follow_queryset = Follower.objects.filter(user=user, followed_user=target_user)
+        if follow_queryset.exists():
+            follow = follow_queryset.first()
+            # user.following.remove(target_user) No need for the Follower model
+            follow.delete()
+            isfollowing = False
+        else:
+            follow = Follower(user=user, followed_user=target_user)
+            follow.save()
+            # user.following.add(target_user) No need for the Follower model
+            isfollowing = True    
 
         num_followers = target_user.followers.count()
         num_following = target_user.following.count()
         context = {
-            'following': following, 
+            'following': isfollowing, 
             'num_followers': num_followers,
-            'num_following': num_following
+            'num_following': num_following,
+            'success':True
         }
         return JsonResponse(context)

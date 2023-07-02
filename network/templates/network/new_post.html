@@ -4,12 +4,12 @@
 {% block body %}
 <!-- if the user is authenticated, then they can post-->
     {% if user.is_authenticated %}
-    <form action="{% url 'network:new_post'%}" method="post">
+    <form action="{% url 'network:new_post'%}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <h3>New Post</h3>
         {{form}}
         <div>
-            <input type="submit" value="Post">
+            <input class="btn btn-primary" type="submit" value="Post">
         </div>
         
     </form>

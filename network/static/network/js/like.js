@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Attach event listeners to all like buttons
-    const likeButtons = document.querySelectorAll('.like-button');  
+    const likeButtons = document.querySelectorAll('.like-button');
     likeButtons.forEach(button => {
       button.addEventListener('click', () => {
         const postId = button.dataset.postId;
@@ -16,11 +16,14 @@ document.addEventListener('DOMContentLoaded', () => {
       })
         .then(response => response.json())
         .then(data => {
-          if (data.liked) {
-            button.innerHTML = 'Unlike';
-          } else {
-            button.innerHTML = 'Like';
-          }
+            if (data.liked) {
+                button.innerHTML = '<i class="heart-icon fas fa-heart liked"></i>';
+            
+              } else {
+                button.innerHTML = '<i class="heart-icon far fa-heart"></i>';
+        
+              }
+      
   
           const likeCountElement = button.parentNode.querySelector('.like-count');
           likeCountElement.innerHTML = data.count;
@@ -46,3 +49,4 @@ document.addEventListener('DOMContentLoaded', () => {
       return decodeURIComponent(csrfCookie.split('=')[1]);
     }
   });
+  

@@ -1,35 +1,42 @@
 .post-li {
-    background-color: #f5f5f5;
     padding: 10px;
     margin-bottom: 10px;
-    border-radius: 5px;
-}
-
-.post-li strong {
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    list-style: none;
+  }
+  .np {
+    margin:10px;
+  }
+  .post-li strong {
     font-weight: bold;
-}
-
-.post-li p {
+  }
+  
+  .post-li p {
     margin-bottom: 5px;
-}
-
-.post-li .like-count {
-    font-weight: bold;
-}
-
-.post-li button {
-    background-color: #4CAF50;
-    color: #fff;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
+  }
+  
+  .heart-icon {
+    color: #ccc;
     cursor: pointer;
+  }
+  
+  .heart-icon:hover {
+    color: red;
+  }
+  
+  .heart-icon.liked {
+    color: red;
+  }
+  .image-container {
+    margin-top: 10px;
 }
 
-.post-li button.like-button {
-    background-color: #4CAF50;
+.post-image {
+    height: 200px;
+    border-radius: 10px;
 }
-
-.post-li button.unlike-button {
-    background-color: #f44336;
+.follow-button { 
+    margin: 10px;
 }
+ 

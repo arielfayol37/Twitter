@@ -3,7 +3,7 @@
 
 {% block body %}
     {% if user.is_authenticated %}
-    <a href="{% url 'network:new_post' %}"><input type="submit" value="New Post"></button></a>
+    <a href="{% url 'network:new_post' %}"><input class="btn btn-primary np" type="submit" value="New Post"></button></a>
     {% endif %}
     {% for post in posts%}
         {% include 'network/post_display.html' with post=post user=user %}

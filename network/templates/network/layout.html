@@ -4,7 +4,11 @@
 <html lang="en">
     <head>
         <title>{% block title %}Social Network{% endblock %}</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
         <link href="{% static 'network/styles.css' %}" rel="stylesheet" type="text/css">
     </head>
     <body>
@@ -16,7 +20,7 @@
               <ul class="navbar-nav mr-auto">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><strong>{{ user.username }}</strong></a>
+                        <a href="{% url 'network:profile' username=user.username %}"><strong>{{ user.username }}</strong></a>
                     </li>
                    
                 {% endif %}
@@ -48,6 +52,9 @@
         </div>
         <script src="{% static 'network/js/follow.js' %}"></script>
         <script src="{% static 'network/js/like.js' %}"></script>
+        <script src="{% static 'network/js/edit.js' %}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+
     </body>
     
 </html>

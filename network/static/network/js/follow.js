@@ -1,22 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const followersCount = document.querySelector('.followers-count');
+    const followingCount = document.querySelector('.following-count');
     const followButton = document.querySelector('.follow-button');
     if (followButton) {
         // if button found on the page, then add event
       followButton.addEventListener('click', () => {
         const username = followButton.dataset.username;
-        followUser(username);
+        follow_unfollow_User(username);
       });
     }
   
-    const unfollowButton = document.querySelector('.unfollow-button');
-    if (unfollowButton) {
-      unfollowButton.addEventListener('click', () => {
-        const username = unfollowButton.dataset.username;
-        unfollowUser(username);
-      });
-    }
-  
-    function followUser(username) {
+    function follow_unfollow_User(username) {
       fetch(`/follow_user/${username}`, {
         method: 'POST',
         headers: { 'X-CSRFToken': getCookie('csrftoken') },
@@ -24,27 +18,18 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(response => response.json())
         .then(data => {
           if (data.following) {
-            followButton.style.display = 'none';
-            unfollowButton.style.display = 'inline-block';
+            followButton.textContent = 'Unfollow';
           }
+          else{
+            followButton.textContent = 'Follow';
+          }
+
+          followersCount.textContent = data.num_followers;
+          followingCount.textContent = data.num_following;
         })
         .catch(error => console.log(error));
     }
-  
-    function unfollowUser(username) {
-      fetch(`/unfollow_user/${username}`, {
-        method: 'POST',
-        headers: { 'X-CSRFToken': getCookie('csrftoken') },
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (!data.following) {
-            followButton.style.display = 'inline-block';
-            unfollowButton.style.display = 'none';
-          }
-        })
-        .catch(error => console.log(error));
-    }
+
   
     function getCookie(name) {
       if (!document.cookie) {

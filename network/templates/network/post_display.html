@@ -1,0 +1,34 @@
+<!--post_display.html-->
+<li class="post-li">
+    <div class="post-section">
+    <a href="{% url 'network:profile' username=post.user.username%}"><strong>{{ post.user.username }}</strong></a>
+    <p class="p-content">{{ post.content }}</p>
+    <div class="image-container">
+        {% if post.image %}
+            <img src="{{ post.image.url }}" alt="Post Image" class="post-image">
+        {% endif %}
+    </div>
+    {% if user.is_authenticated %}
+        <p>
+            <span class="like-button" data-post-id="{{ post.id }}" >
+                {% if post in user.liked_posts.all %}
+                    <i class="heart-icon fas fa-heart liked"></i>
+                {% else %}
+                    <i class="heart-icon far fa-heart"></i>
+                {% endif %}
+            </span>
+            <span class="like-count">{{ post.num_likes }}</span>
+        </p>
+       
+    {% else %}
+        <p><i class="far fa-heart"></i> <span class="like-count">{{ post.num_likes }} </span></p>
+    {% endif %}
+    </div>
+    {% if user == post.user %}
+    <div class="edit-section">{% csrf_token %}
+        <div><button class="btn btn-primary edit-btn" data-post-id="{{ post.id}}">Edit</button></div>
+        <div><textarea class="textarea-edit" value="{{ post.content }}"> {{ post.content }}</textarea></div>    
+    </div>
+    {% endif %}   
+</li>
+    
