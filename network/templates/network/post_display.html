@@ -23,6 +23,7 @@
     {% else %}
         <p><i class="far fa-heart"></i> <span class="like-count">{{ post.num_likes }} </span></p>
     {% endif %}
+    <p>{{ post.timestamp|timesince }} ago</p>
     </div>
     {% if user == post.user %}
     <div class="edit-section">{% csrf_token %}

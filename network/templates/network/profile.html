@@ -4,10 +4,10 @@
 {% block body %}
     <div class="profile-info">
         <h1>{{ profile_user.username }}'s Profile</h1>
-        <p>Followers: <span class="followers-count">{{ profile_user.followers.count }}</span></p>
-        <p>Following: <span class="following-count">{{ profile_user.following.count }}</span></p>
-        {% if user != profile_user %}
-            {% if user.is_authenticated %}
+        <p>Followers: <strong class="followers-count">{{ profile_user.followers.count }}</strong></p>
+        <p>Following: <strong class="following-count">{{ profile_user.following.count }}</strong></p>
+        {% if  user.is_authenticated %}
+            {% if user != profile_user %}
                 {% if is_following %}
                     <button class="follow-button btn btn-primary" data-username="{{ profile_user.username }}">Unfollow</button>
                 {% else %}
