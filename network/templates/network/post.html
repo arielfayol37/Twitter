@@ -1,0 +1,41 @@
+<!-- network: post.html -->
+{% extends "network/layout.html" %}
+    {% load static %}
+    {% block title%} Post {% endblock %}
+    
+    {% block body %}
+        {% include 'network/post_display.html' with post=post user=user %}
+        <div class="reply-section">
+            <div class="reply-area">{% csrf_token %}
+                <span><div class="reply-header"></div><textarea class="textarea-reply" placeholder="Reply to tikt"></textarea></span>    
+                <span><button class="btn btn-primary reply-btn" data-post-id="{{ post.id}}" data-post-username="{{post.user.username}}">Reply</button></span>
+            </div>
+            
+        </div>
+        <div class="user-reply"></div>
+
+        {% for reply in page%}
+            {% include 'network/reply_display.html' with reply=reply user=user %}    
+        {% endfor %}
+        <!-- Render pagination links -->
+        <div class="pagination">
+            <span class="step-links">
+            <span class="current-page">{{ page.number }}</span>
+            {% if page.has_previous %}
+                <a href="?page={{ page.previous_page_number }}"><button class="btn btn-primary np">previous</button></a>
+            {% endif %}
+            
+            {% if page.has_next %}
+                <a href="?page={{ page.next_page_number }}"><button class="btn btn-primary np">next</button></a>
+            {% endif %}
+            </span>
+        </div>
+
+        
+    {% endblock %}
+
+    
+    {% block extrajs %}
+    <script src="{% static 'network/js/reply.js' %}"></script>
+    <script src="{% static 'network/js/likeReply.js' %}"></script>
+    {% endblock %}

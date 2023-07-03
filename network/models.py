@@ -18,7 +18,8 @@ class Post(models.Model):
 
     def num_likes(self):
         return self.likes.count()
-
+    def num_replies(self):
+        return self.replies.count()
 
 class Like(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -26,6 +27,7 @@ class Like(models.Model):
 
     def __str__(self):
         return f"{self.user.username} likes {self.post}"
+    
 
 
 class Follower(models.Model):
@@ -37,24 +39,25 @@ class Follower(models.Model):
 
     
 class Reply(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='replies')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='replies')
     parent_reply = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
+    image = models.ImageField(upload_to='network/images/reply_images/', blank=True, null=True)
+    likes = models.ManyToManyField(User, related_name='liked_replies', blank=True)
 
     def __str__(self):
-        return f"{self.user.username} replied to {self.post}"
-
-# declare a new model with a name "GeeksModel"
-class GeeksModel(models.Model):
-        # fields of the model
-    title = models.CharField(max_length = 200)
-    description = models.TextField()
-    last_modified = models.DateTimeField(auto_now_add = True)
-    img = models.ImageField(upload_to = "{% static 'network/images' %}")
+        if self.parent_reply is None:
+            return f"{self.user.username} replying to {self.post}"
+        else:
+            return f"{self.user.username} replied to {self.parent_reply}"
+    def num_likes(self):
+        return self.likes.count()
     
-        # renames the instances of the model
-        # with their title name
+class LikeReply(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    reply = models.ForeignKey(Reply, on_delete=models.CASCADE, related_name='repliess')
+
     def __str__(self):
-        return self.title
+        return f"{self.user.username} likes {self.reply}"

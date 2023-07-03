@@ -5,8 +5,20 @@
     {% if user.is_authenticated %}
     <a href="{% url 'network:new_post' %}"><input class="btn btn-primary np" type="submit" value="New Post"></button></a>
     {% endif %}
-    {% for post in posts%}
+    {% for post in page%}
         {% include 'network/post_display.html' with post=post user=user %}
     {% endfor %}
-    
+    <!-- Render pagination links -->
+    <div class="pagination">
+        <span class="step-links">
+        <span class="current-page">{{ page.number }}</span>
+        {% if page.has_previous %}
+            <a href="?page={{ page.previous_page_number }}"><button class="btn btn-primary np">previous</button></a>
+        {% endif %}
+        
+        {% if page.has_next %}
+            <a href="?page={{ page.next_page_number }}"><button class="btn btn-primary np">next</button></a>
+        {% endif %}
+        </span>
+    </div>
 {% endblock %}

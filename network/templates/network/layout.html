@@ -53,8 +53,11 @@
         <script src="{% static 'network/js/follow.js' %}"></script>
         <script src="{% static 'network/js/like.js' %}"></script>
         <script src="{% static 'network/js/edit.js' %}"></script>
+        <script src="{% static 'network/js/postClick.js' %}"></script>
+        
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
-
+            {% block extrajs %}
+            {% endblock %}
     </body>
     
 </html>

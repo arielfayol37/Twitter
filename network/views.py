@@ -12,15 +12,49 @@ from django.contrib import messages
 from .forms import *
 from .models import *
 from django.shortcuts import get_object_or_404
+from django.middleware import csrf
 
 from .models import User
 
-
+from django.core.paginator import Paginator
 def index(request):
+    # Get all posts ordered by timestamp
+    posts = Post.objects.all().order_by('-timestamp')
+
+    # Create a Paginator object with 10 posts per page
+    paginator = Paginator(posts, 10)
+
+    # Get the current page number from the request's GET parameters
+    page_number = request.GET.get('page', 1)
+
+    # Get the Page object for the specified page number
+    page = paginator.get_page(page_number)
+
     context = {
-        "posts": Post.objects.all().order_by('-timestamp')
+        'page': page
     }
-    return render(request, "network/index.html",context)
+    return render(request, 'network/index.html', context)
+
+def post(request, post_id):
+    # Get all posts ordered by timestamp
+    post = get_object_or_404(Post, id=post_id)
+    # TODO: Handle the error in case the post doesn't exist
+    replies = post.replies.all().order_by('-timestamp')
+
+    # Create a Paginator object with 10 posts per page
+    paginator = Paginator(replies, 10)
+
+    # Get the current page number from the request's GET parameters
+    page_number = request.GET.get('page', 1)
+
+    # Get the Page object for the specified page number
+    page = paginator.get_page(page_number)
+
+    context = {
+        'page': page,
+        'post': post
+    }
+    return render(request, 'network/post.html', context)
 
 
 def login_view(request):
@@ -94,12 +128,24 @@ def posts(request):
 def profile(request, username):
     profile_user = User.objects.get(username=username)
     posts = profile_user.posts.order_by('-timestamp')
+    
+    # Create a Paginator object with 10 posts per page
+    paginator = Paginator(posts, 10)
+
+    # Get the current page number from the request's GET parameters
+    page_number = request.GET.get('page', 1)
+
+    # Get the Page object for the specified page number
+    page = paginator.get_page(page_number)
     is_following = profile_user.followers.filter(user=request.user).exists()
-    return render(request, 'network/profile.html', {
-        'profile_user': profile_user,
+
+    context = {
+        'page': page,
         'posts': posts,
         'is_following': bool(is_following)
-    })
+    }
+    return render(request, 'network/profile.html', context)
+    
 
 
 @login_required(login_url='network:login')
@@ -124,26 +170,35 @@ def like_unlike_post(request, post_id, likepost=None):
             liked = False
         else:  # Not specified
             like_queryset = Like.objects.filter(user=user, post=post)
-            if like_queryset.exists():
-                like = like_queryset.first()
-                post.likes.remove(like.user)
-                like.delete()
-                liked = False
-            else:
+
+            liked = not like_queryset.exists()
+
+            if liked:
                 like = Like(user=user, post=post)
                 like.save()
-                post.likes.add(like.user)
-                liked = True
+                post.likes.add(user)
+            else:
+                like_queryset.delete()
+                post.likes.remove(user)
 
-        count = post.num_likes()
-        return JsonResponse({'liked': liked, 'count': count})
+            count = post.num_likes()
+            return JsonResponse({'liked': liked, 'count': count})
 
 
 @login_required(login_url='network:login')
 def following(request):
     following_users = request.user.following.values_list('followed_user__id', flat=True)
     posts = Post.objects.filter(user__in=following_users).order_by('-timestamp')
-    return render(request, 'network/following.html', {'posts': posts})
+    # Create a Paginator object with 10 posts per page
+    paginator = Paginator(posts, 10)
+
+    # Get the current page number from the request's GET parameters
+    page_number = request.GET.get('page', 1)
+
+    # Get the Page object for the specified page number
+    page = paginator.get_page(page_number)
+    context = {'page': page}
+    return render(request, 'network/following.html', context)
 
 @login_required(login_url='network:login')
 def new_post(request):
@@ -196,16 +251,19 @@ def follow_unfollow_user(request, username):
 
         # Definitely not the best way to go about it but anyways
         follow_queryset = Follower.objects.filter(user=user, followed_user=target_user)
-        if follow_queryset.exists():
-            follow = follow_queryset.first()
-            # user.following.remove(target_user) No need for the Follower model
-            follow.delete()
-            isfollowing = False
-        else:
+        isfollowing = not follow_queryset.exists()
+
+        if isfollowing:
             follow = Follower(user=user, followed_user=target_user)
             follow.save()
             # user.following.add(target_user) No need for the Follower model
-            isfollowing = True    
+
+        else:
+            follow = follow_queryset.delete()
+            # user.following.remove(target_user) No need for the Follower model
+            
+        
+            
 
         num_followers = target_user.followers.count()
         num_following = target_user.following.count()
@@ -216,3 +274,105 @@ def follow_unfollow_user(request, username):
             'success':True
         }
         return JsonResponse(context)
+
+@login_required(login_url='network:login')
+@csrf_exempt
+def like_unlike_reply(request, reply_id):
+    reply = get_object_or_404(Reply, id=reply_id)
+    user = request.user
+    if request.method == 'POST':
+
+        like_queryset = LikeReply.objects.filter(user=user, reply=reply)
+        liked = not like_queryset.exists()
+
+        if liked:
+            like = LikeReply(user=user, reply=reply)
+            like.save()
+            reply.likes.add(user)
+        else:
+            like_queryset.delete()
+            reply.likes.remove(user)
+
+        count = reply.num_likes()
+        return JsonResponse({'liked': liked, 'count': count})
+    
+
+@login_required(login_url='network:login')
+def new_reply(request):
+    if request.method == "POST":
+        form = newReplyForm(request.POST, request.FILES)  # Include request.FILES in the form initialization
+        if form.is_valid():
+            reply = form.save(commit=False)
+            reply.user = request.user
+            reply.save()
+            messages.success(request, 'Post created successfully.')
+            return redirect('network:index')
+        else:
+            messages.error(request, 'There was an error with your submission.')
+    else:
+        reply = newPostForm()
+    # TODO: Return a JSON instead
+    return render(request, "network/new_post.html", {'form': form})
+
+
+@login_required(login_url='network:login')
+def reply_post(request, post_id):
+    if request.method == "POST":
+        try:
+            post = Post.objects.get(id=post_id)
+            reply = Reply(user=request.user, post = post)
+            data = json.loads(request.body)
+            # retrieve the content of the reply
+            content = data.get('content')
+            reply.content = content
+            reply.save()
+
+            # Return JSON response with the info normally used to render
+            # reply_display.html. This is will be used by reply.js
+            context = {
+                'success': True,
+                'replyId': reply.id,
+                'userLink': reverse('network:profile', kwargs={'username': reply.user.username}),
+                'replyUsername': reply.user.username,
+                # 'replyImageUrl': reply.image.url, For later, in case there will be images for replies
+                'userIsAuthenticated':True,
+                'replyInUserLikedReplies':False,
+                'replyNumLikes': 0,
+                'replyTimestamp': 'Just now',
+                'userIsReplyUser': True,
+                # 'csrfToken': csrf.get_token(request), may use this later
+                'replyContent': content
+            }
+
+            return JsonResponse(context)
+        except Post.DoesNotExist:
+            # Return a JSON response indicating the failure
+            return JsonResponse({'success': False, 'error': 'Post not found'})
+    # Return a JSON response indicating the incorrect HTTP method
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
+@login_required(login_url='network:login')
+@csrf_exempt
+def modify_reply(request, reply_id):
+    if request.method == 'POST':
+        try:
+            reply = Reply.objects.get(id=reply_id)
+            if request.user != reply.user:
+                return HttpResponseForbidden("You are not authorized to modify this post.")
+            data = json.loads(request.body)
+            # Retrieve the updated content from the request body
+            content = data.get('content', '')
+
+            # Update the reply content
+            reply.content = content
+            reply.save()
+
+            # Return a JSON response indicating the success
+            return JsonResponse({'success': True})
+        except Post.DoesNotExist:
+            # Return a JSON response indicating the failure
+            return JsonResponse({'success': False, 'error': 'Post not found'})
+    
+    # Return a JSON response indicating the incorrect HTTP method
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})

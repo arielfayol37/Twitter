@@ -7,10 +7,14 @@
     <form action="{% url 'network:new_post'%}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <h3>New Post</h3>
-        {{form}}
-        <div>
-            <input class="btn btn-primary" type="submit" value="Post">
+        <div class="post-form">
+            <div>{{form.content}}</div>
+            <div>{{form.image}}</div>
+            <div>
+                <input class="btn btn-primary post-btn" type="submit" value="Post">
+            </div>
         </div>
+        
         
     </form>
     {% endif %}

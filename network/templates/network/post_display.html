@@ -1,7 +1,7 @@
 <!--post_display.html-->
-<li class="post-li">
+<li class="post-li" data-post-id="{{ post.id }}">
     <div class="post-section">
-    <a href="{% url 'network:profile' username=post.user.username%}"><strong>{{ post.user.username }}</strong></a>
+    <a class="user-link il" href="{% url 'network:profile' username=post.user.username%}"><strong>{{ post.user.username }}</strong></a>
     <p class="p-content">{{ post.content }}</p>
     <div class="image-container">
         {% if post.image %}
@@ -10,20 +10,29 @@
     </div>
     {% if user.is_authenticated %}
         <p>
-            <span class="like-button" data-post-id="{{ post.id }}" >
+            <div>
+            <span class="like-count">{{ post.num_likes }}</span>    
+            <span class="like-button il" data-post-id="{{ post.id }}" >
                 {% if post in user.liked_posts.all %}
                     <i class="heart-icon fas fa-heart liked"></i>
                 {% else %}
                     <i class="heart-icon far fa-heart"></i>
                 {% endif %}
+                
             </span>
-            <span class="like-count">{{ post.num_likes }}</span>
+            
+            </div>
+            <span class="like-count">{{ post.num_replies }}</span>
+            <a href="#" class="reply-icon">
+                <i class="fa fa-reply"></i> Reply
+            </a>
+
         </p>
-       
+        
     {% else %}
         <p><i class="far fa-heart"></i> <span class="like-count">{{ post.num_likes }} </span></p>
     {% endif %}
-    <p>{{ post.timestamp|timesince }} ago</p>
+    <p class="timestamp">{{ post.timestamp|timesince }} ago</p>
     </div>
     {% if user == post.user %}
     <div class="edit-section">{% csrf_token %}

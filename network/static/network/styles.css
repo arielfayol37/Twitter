@@ -4,6 +4,7 @@
     border: 1px solid #ccc;
     background-color: #f9f9f9;
     list-style: none;
+
   }
   .np {
     margin:10px;
@@ -39,4 +40,29 @@
 .follow-button { 
     margin: 10px;
 }
- 
+.post-btn {
+  margin: 10px;
+}
+.post-form {
+  position: relative;
+  margin-left: 4%;
+}
+
+.replyArea{
+  position:fixed;
+  left: 45%;
+  height:max-content;
+}
+.replyHeader {
+  font-family: Arial, sans-serif;
+  font-weight: 200;
+  font-style: italic;
+  color: #999;
+}
+.timestamp {
+  font-family: Arial, sans-serif;
+  font-weight: 200;
+  font-style: italic;
+  color: #999;
+  font-size: x-small;
+}

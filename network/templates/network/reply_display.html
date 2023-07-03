@@ -1,0 +1,41 @@
+<!--network: reply_display.html-->
+<li class="reply-li" data-reply-id="{{ reply.id }}">
+    <div class="reply-section">
+    <a class="user-link" href="{% url 'network:profile' username=reply.user.username%}"><strong>{{ reply.user.username }}</strong></a>
+    <p class="r-content">{{ reply.content }}</p>
+    <div class="image-container">
+        {% if reply.image %}
+            <img src="{{ reply.image.url }}" alt="Reply Image" class="post-image">
+        {% endif %}
+    </div>
+    {% if user.is_authenticated %}
+        <p>
+            <span class="rlike-count">{{ reply.num_likes }}</span>
+            <span class="rlike-button" data-reply-id="{{ reply.id }}" >
+                {% if reply in user.liked_replies.all %}
+                    <i class="heart-icon fas fa-heart liked"></i>
+                {% else %}
+                    <i class="heart-icon far fa-heart"></i>
+                {% endif %}
+            </span>
+            
+            
+            <a href="#" class="reply-icon">
+                <i class="fa fa-reply"></i> Reply
+            </a>
+
+        </p>
+        
+    {% else %}
+        <p><i class="far fa-heart"></i> <span class="rlike-count">{{ reply.num_likes }} </span></p>
+    {% endif %}
+    <p class="timestamp">{{ reply.timestamp|timesince }} ago</p>
+    </div>
+    {% if user == reply.user %}
+    <div class="edit-section">{% csrf_token %}
+        <div><button class="btn btn-primary edit-btn" data-reply-id="{{ reply.id}}">Edit</button></div>
+        <div><textarea class="textarea-edit" value="{{ reply.content }}"> {{ reply.content }}</textarea></div>    
+    </div>
+    {% endif %}   
+</li>
+    
