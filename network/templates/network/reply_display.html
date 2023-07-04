@@ -34,7 +34,7 @@
     {% if user == reply.user %}
     <div class="edit-section">{% csrf_token %}
         <div><button class="btn btn-primary edit-btn" data-reply-id="{{ reply.id}}">Edit</button></div>
-        <div><textarea class="textarea-edit" value="{{ reply.content }}"> {{ reply.content }}</textarea></div>    
+        <div><textarea class="textarea-edit" value="{{ reply.content }}"></textarea></div>    
     </div>
     {% endif %}   
 </li>

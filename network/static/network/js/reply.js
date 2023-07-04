@@ -1,6 +1,10 @@
+
+function parseReplies(){
 document.addEventListener('DOMContentLoaded', () => {
     // 
     const replyTextArea = document.querySelector('.textarea-reply');
+    const editTextArea = document.querySelector('.textarea-edit');
+    //editTextArea.style.display = 'none';
     const maxLength = 280; // A tikt's max number of characters. Should be same for new post in
                             // in the form class.
     const replyButton = document.querySelector('.reply-btn');
@@ -17,13 +21,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     replyTextArea.addEventListener('focus', function () {
         // Get the username and display 'replying to username'
-        replyHeader.innerHTML = `replying to <span class="username"> @${replyButton.dataset.postUsername}</span>`;
+        const username = replyButton.dataset.postUsername;
+        replyHeader.innerHTML = `replying to <span class="username">
+                <a href="/user/${username}"> @${username}</a></span>`;
         replyHeader.style.display ='block';
+
+        // Add an event listener to the anchor tag
+        const anchorTag = replyHeader.querySelector('a');
+        anchorTag.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent the default navigation behavior
+            const href = anchorTag.getAttribute('href');
+            window.location.href = href; // Navigate to the specified link
+        });
     });
 
     replyTextArea.addEventListener('blur', function () {
         replyHeader.innerHTML = '';
-        replyHeader.style.display ='none';
+        setTimeout(() => {
+            replyHeader.style.display ='none';
+            }, 300);
+        
 
     });
 
@@ -113,16 +130,32 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
         
             if (data.success){
-                const newReply = document.createElement('div');
                 // Display the reply among the replies to the post but with 
                 // a different background, till the fetch is complete
-                newReply.innerHTML = generateReplyHTML(data); // Check reply_display.html and reproduce the same thing
+                const newReply = generateReplyHTML(data); // Check reply_display.html and reproduce the same thing
                                             // Since there are conditions there, we will verify in the conditions
                                             // in the Django view and return the truth values.
 
 
                 replySection.parentElement.querySelector('.user-reply').prepend(newReply);
-            }
+                
+                // Apply the CSS class to trigger the animation
+                newReply.classList.add('animate-prepend');
+                // Delay applying the 'show' class to allow the animation to take effect
+                setTimeout(() => {
+                newReply.classList.add('show');
+                }, 10);
+                // Remove the CSS classes after the animation completes
+                setTimeout(() => {
+                newReply.classList.remove('animate-prepend', 'show');
+                }, 3000);
+                
+                setTimeout(() => {
+                    newReply.querySelector('.edit-section').classList.add('hide');
+                    //newReply.querySelector('.edit-section').style.display = 'none';
+
+                    }, 10000);
+                    }
         })
         .catch(error => console.log(error));
     }
@@ -147,48 +180,89 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-
         function generateReplyHTML(data){
-            const htmlContent = `
-            
+            const newReply = document.createElement('li');
+            newReply.classList.add('reply-li');
+            newReply.setAttribute('data-reply-id', data.replyId);
 
-            <!--network: reply_display.html-->
-<li class="reply-li" data-reply-id="${data.replyId}">
-    <div class="reply-section">
-    <a class="user-link" href="${data.userLink}"><strong>${data.replyUsername}</strong></a>
-    <p class="r-content">${data.replyContent}</p>
-    <div class="image-container">
-    </div>
-    
-        <p>
-            <span class="rlike-count">${data.replyNumLikes}</span>
-            <span class="rlike-button" data-reply-id="${data.replyId}" >
-                    <i class="heart-icon far fa-heart"></i>
-            </span>
+            const replySection = document.createElement('div');
+            replySection.classList.add('reply-section');
 
-            
-            
-            <a href="#" class="reply-icon">
-                <i class="fa fa-reply"></i> Reply
-            </a>
+            const userLink = document.createElement('a');
+            userLink.classList.add('user-link');
+            userLink.href = data.userLink;
+            const username = document.createElement('strong');
+            username.textContent = data.replyUsername;
+            userLink.appendChild(username);
+            replySection.appendChild(userLink);
 
-        </p>
-        
-    <p class="timestamp">${data.replyTimestamp}</p>
-    </div>
-    <div class="edit-section">
-        <div><button class="btn btn-primary edit-btn" data-reply-id="${data.replyId}">Edit</button></div>
-    
-    
-        <!--<div><textarea class="textarea-edit" value="${data.replyContent}"> ${data.replyContent}</textarea></div> -->    
-   
-   
-     </div>
-  
-</li>
+            const content = document.createElement('p');
+            content.classList.add('r-content');
+            content.textContent = data.replyContent;
+            replySection.appendChild(content);
+
+            const imageContainer = document.createElement('div');
+            imageContainer.classList.add('image-container');
+            replySection.appendChild(imageContainer);
+
+            const justP = document.createElement('p');
+            const likeCountSpanInP = document.createElement('span');
+            likeCountSpanInP.classList.add('rlike-count');
+            likeCountSpanInP.textContent = data.replyNumLikes;
+
+            const likeButtonSpanInP = document.createElement('span');
+            likeButtonSpanInP.classList.add('rlike-button');
+            likeButtonSpanInP.setAttribute('data-reply-id', data.replyId);
             
-            `;
-            return htmlContent;
-        }  
+            const heartIconInLikeButtonSpan = document.createElement('i');
+            heartIconInLikeButtonSpan.classList.add('heart-icon', 'far', 'fa-heart');
+            
+            likeButtonSpanInP.appendChild(heartIconInLikeButtonSpan);
+            justP.appendChild(likeCountSpanInP);
+            justP.appendChild(likeButtonSpanInP);
+
+
+            const replyButton = document.createElement('a');
+            replyButton.classList.add('reply-icon');
+            replyButton.href = '#';
+            const replyIcon = document.createElement('i');
+            replyIcon.classList.add('fa', 'fa-reply');
+            replyButton.appendChild(replyIcon);
+            justP.appendChild(replyButton);
+
+            const timestampP = document.createElement('p');
+            timestampP.classList.add('timestamp');
+            timestampP.textContent = data.replyTimestamp; 
+            replySection.appendChild(justP);
+            replySection.appendChild(timestampP);
+
+            const editSection = document.createElement('div');
+            editSection.classList.add('edit-section');
+            const editDiv = document.createElement('div');
+            const editButtonInEditSection = document.createElement('button');
+            editButtonInEditSection.classList.add('btn', 'btn-primary', 'edit-btn');
+            editButtonInEditSection.setAttribute('data-reply-id', data.replyId);
+            editButtonInEditSection.textContent = 'Edit';
+            editDiv.appendChild(editButtonInEditSection);
+
+            const editDiv2 = document.createElement('div');
+            const textarea = document.createElement('textarea');
+            textarea.classList.add('textarea-edit');
+            textarea.setAttribute('value', data.replyContent);
+            editDiv2.appendChild(textarea);
+
+            editSection.appendChild(editDiv);
+            editSection.appendChild(editDiv2);
+
+
+            newReply.appendChild(replySection);
+            newReply.appendChild(editSection);
+
+            return newReply;
+
+        }
 
 });
+};
+
+parseReplies();

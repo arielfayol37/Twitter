@@ -24,7 +24,7 @@
             </div>
             <span class="like-count">{{ post.num_replies }}</span>
             <a href="#" class="reply-icon">
-                <i class="fa fa-reply"></i> Reply
+                <i class="fa fa-reply" href="{% url 'network:post' post_id=post.id %}"></i> Reply
             </a>
 
         </p>

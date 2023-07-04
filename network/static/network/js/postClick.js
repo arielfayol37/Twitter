@@ -7,7 +7,7 @@ const postSections= document.querySelectorAll('.post-li');
      
     if (!(event.target.parentElement.classList.contains('il') 
     || event.target.parentElement.parentElement.classList.contains('il')) 
-    ){  console.log(currentURL);
+    ){  
         // the condition above is because it seems like
         // fontawesome changes the structure of the like button
         // it is in unliked mode.

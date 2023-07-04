@@ -148,3 +148,27 @@ textarea:not(:focus) {
 #np-progress{
   right: 53%;
 }
+
+/*Animating the addition of a reply to html without reloading the page (reply.js)*/
+
+.animate-prepend {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 3s ease-out, max-height 3s ease-out;
+}
+
+.animate-prepend.show {
+  opacity: 1;
+  max-height: 700px; /* Adjust the value as needed */
+}
+.edit-section {
+  transition: opacity 2s ease-out, height 2s ease-out, padding 2s ease-out, display 2s ease-in-out;
+}
+
+.hide {
+  opacity: 0;
+  height: 0;
+  padding: 0;
+  display: none;
+}
