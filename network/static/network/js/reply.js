@@ -3,9 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const replyTextArea = document.querySelector('.textarea-reply');
     const maxLength = 450; // same as in the Django model for a post
     const replyButton = document.querySelector('.reply-btn');
-    const replyCircle = document.querySelector('.reply-circle');
-    replyCircle.style.strokeDashoffset = '63';
-    const maxCircleValue = 63; // Check in style.css
+    const progressBar = document.querySelector('.circular-progress');
+    
 
     
     const orignalColorOfReplyButton = replyButton.style.backgroundColor;
@@ -38,10 +37,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const textLength = text.length;
         const progress = (textLength / maxLength);
-        const strokeValue = Math.floor((1-progress)
-            * maxCircleValue);
-        
-        replyCircle.style.strokeDasharray = `${strokeValue}`;
+        const progressValue = Math.floor(progress * 100);
+        progressBar.style.background = `conic-gradient(
+            #4d5bf9 ${progressValue * 3.6}deg,
+            #cadcff ${progressValue * 3.6}deg
+        )`;
         
 
 

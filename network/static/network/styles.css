@@ -59,6 +59,7 @@
   font-weight: 200;
   font-style: italic;
   color: #999;
+  font-size:smaller;
 }
 .timestamp {
   font-family: Arial, sans-serif;
@@ -96,17 +97,39 @@ textarea:not(:focus) {
   transition: box-shadow 0.3s ease-out;
 }
 
-/*----------------- Gauge Ring For Text Area Capacity -----------*/
+/*----------------- Progress Bar For Text Area Capacity -----------*/
 
-.reply-svg {
+
+.container-progress {
+  height: 20px;
+  width: 20px;
+
   position: absolute;
-  bottom: -60px;
+  transform: translate(-50%, -50%);
+  top: 30%;
+  right: 7%;
+  border-radius: 2px;
+  display: grid;
+  place-items: center;
 }
-
-.reply-circle {
-  fill: none;
-  stroke: #00acee;
-  stroke-width: 4px;
-  stroke-dasharray: 63; 
-  stroke-linecap: round;
+.circular-progress {
+  position: relative;
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+.circular-progress:before {
+  content: "";
+  position: absolute;
+  height: 84%;
+  width: 84%;
+  background-color: #ffffff;
+  border-radius: 50%;
+}
+.value-container-progress {
+  position: relative;
+  font-family: "Poppins", sans-serif;
+  color: #231c3d;
 }
