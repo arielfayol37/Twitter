@@ -1,6 +1,6 @@
 <!--New Post Html-->
 {% extends 'network/layout.html' %}
-
+{% load static %}
 {% block body %}
 <!-- if the user is authenticated, then they can post-->
     {% if user.is_authenticated %}
@@ -8,7 +8,16 @@
         {% csrf_token %}
         <h3>New Post</h3>
         <div class="post-form">
-            <div>{{form.content}}</div>
+            <span>
+                <div>{{form.content}}</div>
+            </span>
+            
+                <div class="container-progress np-progress" id="np-progress">
+                    <div class="circular-progress np-progress">
+                      <div class="value-container-progress np-progress"></div>
+                    </div>
+                  </div> 
+            
             <div>{{form.image}}</div>
             <div>
                 <input class="btn btn-primary post-btn" type="submit" value="Post">
@@ -18,4 +27,8 @@
         
     </form>
     {% endif %}
+{% endblock %}
+
+{% block extrajs %}
+    <script src="{% static 'network/js/newPost.js' %}"></script>
 {% endblock %}

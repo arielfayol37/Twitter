@@ -6,9 +6,21 @@
     list-style: none;
     cursor: pointer;
   }
+
+.reply-li {
+  padding: 10px;
+  border: 1px solid #eaeaea;
+  background-color: #f7f7f7;
+  margin-top: 10px;
+  list-style: none;
+  cursor: pointer;
+  margin-left: 3%;
+}  
   .np {
     margin:10px;
   }
+
+  
   .post-li strong {
     font-weight: bold;
   }
@@ -132,4 +144,7 @@ textarea:not(:focus) {
   position: relative;
   font-family: "Poppins", sans-serif;
   color: #231c3d;
+}
+#np-progress{
+  right: 53%;
 }

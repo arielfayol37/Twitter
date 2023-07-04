@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     // 
     const replyTextArea = document.querySelector('.textarea-reply');
-    const maxLength = 450; // same as in the Django model for a post
+    const maxLength = 280; // A tikt's max number of characters. Should be same for new post in
+                            // in the form class.
     const replyButton = document.querySelector('.reply-btn');
     const progressBar = document.querySelector('.circular-progress');
     
@@ -51,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
           enableButton(replyButton);
         } else {
           // Textarea is empty
+
           disableButton(replyButton);
         }
       });
@@ -62,6 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
         replyPost(replyButton.dataset.postId, replyTextArea.value, document.querySelector(".reply-section"));
         disableButton(replyButton);
         replyTextArea.value = '';
+        progressBar.style.background = `conic-gradient(
+            #4d5bf9 ${0 * 3.6}deg,
+            #cadcff ${0 * 3.6}deg
+        )`;
 
     });
         

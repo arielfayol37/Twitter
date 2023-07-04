@@ -3,7 +3,7 @@
 {% extends 'network/layout.html' %}
 {% block body %}
     <div class="profile-info">
-        <h1>{{ profile_user.username }}'s Profile</h1>
+        <h1> @{{ profile_user.username }}</h1>
         <p>Followers: <strong class="followers-count">{{ profile_user.followers.count }}</strong></p>
         <p>Following: <strong class="following-count">{{ profile_user.following.count }}</strong></p>
         {% if  user.is_authenticated %}

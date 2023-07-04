@@ -142,6 +142,7 @@ def profile(request, username):
     context = {
         'page': page,
         'posts': posts,
+        'profile_user': profile_user,
         'is_following': bool(is_following)
     }
     return render(request, 'network/profile.html', context)
