@@ -7,7 +7,12 @@
         {% include 'network/post_display.html' with post=post user=user %}
         <div class="reply-section">
             <div class="reply-area">{% csrf_token %}
-                <span><div class="reply-header"></div><textarea class="textarea-reply" placeholder="Reply to tikt"></textarea></span>    
+                
+                <span><div class="reply-header"></div><textarea class="textarea-reply" placeholder="Reply to tikt"></textarea>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="reply-svg">
+                        <circle cx="20" cy="30" r="10" class="reply-circle"/>
+                    </svg>                   
+                </span>    
                 <span><button class="btn btn-primary reply-btn" data-post-id="{{ post.id}}" data-post-username="{{post.user.username}}">Reply</button></span>
             </div>
             
@@ -20,7 +25,7 @@
         <!-- Render pagination links -->
         <div class="pagination">
             <span class="step-links">
-            <span class="current-page">{{ page.number }}</span>
+            <span class="current-page btn">{{ page.number }}</span>
             {% if page.has_previous %}
                 <a href="?page={{ page.previous_page_number }}"><button class="btn btn-primary np">previous</button></a>
             {% endif %}

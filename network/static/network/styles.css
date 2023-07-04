@@ -4,7 +4,7 @@
     border: 1px solid #ccc;
     background-color: #f9f9f9;
     list-style: none;
-
+    cursor: pointer;
   }
   .np {
     margin:10px;
@@ -48,12 +48,13 @@
   margin-left: 4%;
 }
 
-.replyArea{
+.reply-area{
   position:fixed;
-  left: 45%;
+  left: 30%;
   height:max-content;
+  bottom: 5%;
 }
-.replyHeader {
+.reply-header {
   font-family: Arial, sans-serif;
   font-weight: 200;
   font-style: italic;
@@ -65,4 +66,47 @@
   font-style: italic;
   color: #999;
   font-size: x-small;
+}
+
+.current-page {
+  border-radius: 50%;
+}
+
+textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  resize: vertical;
+  height: max-content;
+  width: 40vw;
+  transition: height 0.3s ease;
+  transition: box-shadow 0.3s ease;
+  overflow: hidden; /* To hide the scroll bars*/
+}
+
+textarea:focus {
+  outline: none;
+  box-shadow: 0 0 5px #6c63ff;
+}
+
+textarea:not(:focus) {
+  box-shadow: none;
+  transition: box-shadow 0.3s ease-out;
+}
+
+/*----------------- Gauge Ring For Text Area Capacity -----------*/
+
+.reply-svg {
+  position: absolute;
+  bottom: -60px;
+}
+
+.reply-circle {
+  fill: none;
+  stroke: #00acee;
+  stroke-width: 4px;
+  stroke-dasharray: 63; 
+  stroke-linecap: round;
 }

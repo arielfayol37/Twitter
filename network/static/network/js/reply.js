@@ -1,7 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
     // 
     const replyTextArea = document.querySelector('.textarea-reply');
+    const maxLength = 450; // same as in the Django model for a post
     const replyButton = document.querySelector('.reply-btn');
+    const replyCircle = document.querySelector('.reply-circle');
+    replyCircle.style.strokeDashoffset = '63';
+    const maxCircleValue = 63; // Check in style.css
+
+    
     const orignalColorOfReplyButton = replyButton.style.backgroundColor;
     disableButton(replyButton);
 
@@ -11,17 +17,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     replyTextArea.addEventListener('focus', function () {
         // Get the username and display 'replying to username'
-        replyHeader.textContent = `replying to ${replyButton.dataset.postUsername}`;
+        replyHeader.innerHTML = `replying to <span class="username"> @${replyButton.dataset.postUsername}</span>`;
         replyHeader.style.display ='block';
     });
 
     replyTextArea.addEventListener('blur', function () {
-        replyHeader.textContent = '';
+        replyHeader.innerHTML = '';
         replyHeader.style.display ='none';
 
     });
 
     replyTextArea.addEventListener('input', function () {
+
+        this.style.height = 'auto';
+        this.style.height = this.scrollHeight + 'px';
+
+        const text = this.value;
+        if (text.length > maxLength) {
+        this.value = text.slice(0, maxLength); // Truncate the excess characters
+        }
+        const textLength = text.length;
+        const progress = (textLength / maxLength);
+        const strokeValue = Math.floor((1-progress)
+            * maxCircleValue);
+        
+        replyCircle.style.strokeDasharray = `${strokeValue}`;
+        
+
+
+
         if (replyTextArea.value.trim() !== '') {
           // Textarea has some text
           enableButton(replyButton);
