@@ -36,23 +36,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const postSection = editSection.parentElement.querySelector('.post-section');
                 if (textArea.style.display === 'none'){
-                    postSection.style.display = 'none';
                     textArea.textContent = textArea.dataset.value;
                     textArea.style.display = 'block';
-                    
-                    
-                    textArea.style.height = '200px';
-                    textArea.style.width = '300px';
+                    textArea.style.height = '0px';
+                    textArea.style.width = '0px';
+                    textArea.style.transition = 'height 2s, width 2s';
                     button.textContent = 'Save';
-                }else {
-                    textArea.style.display = 'none';
-                    setTimeout(() => {textArea.classList.remove('show');
-                    textArea.classList.add('hide');}, 10);  // may be can work without this
-                    
-                    postSection.style.display = 'block';
+        
+                    // Trigger the transition by delaying the height and width modifications
+                    setTimeout(() => {
+                        textArea.style.height = '200px';
+                        textArea.style.width = '300px';
+                    }, 10);
+        
+                    } else {
+                        // Hiding the textarea
+                    textArea.style.height = '0px';
+                    textArea.style.width = '0px';
+                    //textArea.style.transition = 'height 2s, width 2s';
+        
+        
+        
+                    // Wait for the transition to complete before hiding the textarea
                     const postId = button.dataset.postId;
                     const content = textArea.value;
-                    button.textContent = 'Edit';
+                    setTimeout(() => {
+                        textArea.style.display = 'none';
+                        button.textContent = 'Edit';
+                    }, 1600);
                         
                         modifyPost(postId, content, postSection, textArea);
                 }

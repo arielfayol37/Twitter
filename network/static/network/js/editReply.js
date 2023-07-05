@@ -16,8 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const textArea = editSection.querySelector('.textarea-edit');
         textArea.addEventListener('input', function () {
 
-            this.style.height = 'auto';
-            this.style.height = this.scrollHeight + 'px';
+            if (parseInt(this.style.height) > 200) {
+                this.style.height = 'auto';
+                this.style.height = this.scrollHeight + 'px';
+              };
     
             const text = this.value;
             if (text.length > maxLength) {

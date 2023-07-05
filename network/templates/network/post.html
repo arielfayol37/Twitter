@@ -5,21 +5,22 @@
     
     {% block body %}
         {% include 'network/post_display.html' with post=post user=user %}
-        <div class="reply-section">
-            <div class="reply-area">{% csrf_token %}
-                <span><div class="reply-header"></div><textarea class="textarea-reply" placeholder="tikt your reply..."></textarea>
-                <div class="container-progress">
-                    <div class="circular-progress">
-                      <div class="value-container-progress"></div>
-                    </div>
-                </div> 
-                </span>   
-                <span><button class="btn btn-primary reply-btn" data-post-id="{{ post.id}}" data-post-username="{{post.user.username}}">Reply</button></span>
+        {% if user.is_authenticated %}
+            <div class="reply-section">
+                <div class="reply-area">{% csrf_token %}
+                    <span><div class="reply-header"></div><textarea class="textarea-reply" placeholder="tikt your reply..."></textarea>
+                    <div class="container-progress">
+                        <div class="circular-progress">
+                        <div class="value-container-progress"></div>
+                        </div>
+                    </div> 
+                    </span>   
+                    <span><button class="btn btn-primary reply-btn" data-post-id="{{ post.id}}" data-post-username="{{post.user.username}}">Reply</button></span>
+                </div>
+                
             </div>
-            
-        </div>
-        <div class="user-reply"></div>
-
+            <div class="user-reply"></div>
+        {% endif %}
         {% for reply in page%}
             {% include 'network/reply_display.html' with reply=reply user=user %}    
         {% endfor %}

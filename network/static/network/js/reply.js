@@ -151,14 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => {
                 newReply.classList.remove('animate-prepend', 'show');
                 }, 3000);
-                /* This was to make the edit section disappear
-                setTimeout(() => {
-                    newReply.querySelector('.edit-section').classList.add('hide');
-                    //newReply.querySelector('.edit-section').style.display = 'none';
-
-                    }, 10000);
-
-                */
+            
                     }
                 
                     
@@ -273,7 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const editDiv2 = document.createElement('div');
             const textarea = document.createElement('textarea');
             textarea.classList.add('textarea-edit');
-            textarea.setAttribute('value', data.replyContent);
+            textarea.setAttribute('data-value', data.replyContent); 
             textarea.style.display = 'none';
             editDiv2.appendChild(textarea);
 
@@ -283,6 +276,75 @@ document.addEventListener('DOMContentLoaded', () => {
 
             newReply.appendChild(replySection);
             newReply.appendChild(editSection);
+
+
+
+
+
+
+            editButtonInEditSection.addEventListener('click', () => {
+
+                // Get the associated text area
+                
+                textarea.addEventListener('input', function () {
+                    if (parseInt(textarea.style.height) > 200) {
+                        textarea.style.height = 'auto';
+                        textarea.style.height = textarea.scrollHeight + 'px';
+                      }
+                    
+                    
+            
+                    const text = textarea.value;
+                    if (text.length > maxLength) {
+                        textarea.value = text.slice(0, maxLength); // Truncate the excess characters
+                    }
+                    if (text.trim() !== '') {
+                        // Textarea has some text
+                        editButtonInEditSection.disabled = false;
+                      } else {
+                        // Textarea is empty
+              
+                        editButtonInEditSection.disabled = true;
+                      };
+                });
+                    
+        
+                const replySection = editSection.parentElement.querySelector('.reply-section');
+                if (textarea.style.display === 'none') {
+                    textarea.textContent = textarea.dataset.value;
+                    textarea.style.display = 'block';
+                    textarea.style.height = '0px';
+                    textarea.style.width = '0px';
+                    textarea.style.transition = 'height 2s, width 2s';
+                    editButtonInEditSection.textContent = 'Save'; 
+                    // Trigger the transition by delaying the height and width modifications
+                    setTimeout(() => {
+                        textarea.style.height = '200px';
+                        textarea.style.width = '300px';
+                    }, 10);
+        
+                    } else {
+                        // Hiding the textarea
+                    textarea.style.height = '0px';
+                    textarea.style.width = '0px';
+                    //textarea.style.transition = 'height 2s, width 2s';
+        
+        
+        
+                    // Wait for the transition to complete before hiding the textarea
+                    const replyId = data.replyId;
+                    const content = textarea.value;
+                    setTimeout(() => {
+                        textarea.style.display = 'none';
+                        editButtonInEditSection.textContent = 'Edit'; 
+            
+                    }, 1600);
+        
+                        
+                        modifyReply(replyId, content, replySection, textarea);
+                }
+                
+            });
 
             return newReply;
 
@@ -331,6 +393,25 @@ function likeReply(button, replyId) {
       .catch(error => console.log(error));
   }
 
+
+  function modifyReply(replyId, content, replySection, textArea) {
+    fetch(`/modify_reply/${replyId}`, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': getCookie('csrftoken') },
+        body: JSON.stringify({ content }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Handle the response data or perform any necessary actions
+        //console.log(data);
+        if (data.success){
+            replySection.querySelector('.r-content').textContent = content;
+            textArea.dataset.value = content;
+            textArea.textContent = ''; 
+        }
+    })
+    .catch(error => console.log(error));
+}
 
 
 parseReplies();
