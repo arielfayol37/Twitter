@@ -13,8 +13,9 @@ from .forms import *
 from .models import *
 from django.shortcuts import get_object_or_404
 from django.middleware import csrf
-
+from django.utils.timesince import timesince
 from .models import User
+
 
 from django.core.paginator import Paginator
 def index(request):
@@ -35,7 +36,7 @@ def index(request):
     }
     return render(request, 'network/index.html', context)
 
-def post(request, post_id):
+def post(request, post_id, is_fetching=False, page_num=-1):
     # Get all posts ordered by timestamp
     post = get_object_or_404(Post, id=post_id)
     # TODO: Handle the error in case the post doesn't exist
@@ -43,18 +44,23 @@ def post(request, post_id):
 
     # Create a Paginator object with 10 posts per page
     paginator = Paginator(replies, 10)
+    if is_fetching == 1:
+        page = paginator.get_page(page_num)
+        return JsonResponse({'page': [reply.serialize_reply() for reply in page], 'page_has_next':page.has_next()})
+    elif is_fetching == 0:
+        # Get the current page number from the request's GET parameters
+        page_number = request.GET.get('page', 1)
 
-    # Get the current page number from the request's GET parameters
-    page_number = request.GET.get('page', 1)
-
-    # Get the Page object for the specified page number
-    page = paginator.get_page(page_number)
-
-    context = {
-        'page': page,
-        'post': post
-    }
-    return render(request, 'network/post.html', context)
+        # Get the Page object for the specified page number
+        page = paginator.get_page(page_number)
+        
+        context = {
+            'page': page,
+            'post': post
+        }
+        return render(request, 'network/post.html', context)
+    
+        
 
 
 def login_view(request):

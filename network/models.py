@@ -56,6 +56,23 @@ class Reply(models.Model):
         return self.likes.count()
     def num_replies(self):
         return self.replies.count()
+    def serialize_reply(self):
+        user_liked = self.user.liked_replies.filter(id=self.id).exists()
+        serialized_data = {
+            'id': self.id,
+            'user_id': self.user_id,
+            'post_id': self.post_id,
+            'user_username': self.user.username,
+            'user_profile_picture_url': self.user.profile_picture.url if self.user.profile_picture else False,
+            'parent_reply_id': self.parent_reply_id,
+            'content': self.content,
+            'timestamp': self.timestamp.isoformat(),
+            'image_url': self.image.url if self.image else False,
+            'num_likes': self.num_likes(),
+            'num_replies': self.num_replies(),
+            'user_liked': user_liked
+        }
+        return serialized_data
     
 class LikeReply(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

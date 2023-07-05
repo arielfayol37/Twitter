@@ -21,11 +21,13 @@
             </div>
             <div class="user-reply"></div>
         {% endif %}
+        <div class="replies">
         {% for reply in page%}
             {% include 'network/reply_display.html' with reply=reply user=user %}    
         {% endfor %}
+        </div>
         <!-- Render pagination links -->
-        <div class="pagination">
+        <div class="pagination" style="display: none;"><!--Set display to none for infinite scroll-->
             <span class="step-links">
             <span class="current-page btn">{{ page.number }}</span>
             {% if page.has_previous %}
@@ -33,7 +35,10 @@
             {% endif %}
             
             {% if page.has_next %}
-                <a href="?page={{ page.next_page_number }}"><button class="btn btn-primary np">next</button></a>
+                <span class="page-number" data-page-number="{{ page.next_page_number }}"></span>
+                <a href="?page={{ page.next_page_number }}"><button class="btn btn-primary np">next</button></a>\
+            {% else %}
+                <span class="page-number" data-page-number="-1"></span>    
             {% endif %}
             </span>
         </div>
@@ -46,4 +51,5 @@
     <script src="{% static 'network/js/reply.js' %}"></script>
     <script src="{% static 'network/js/likeReply.js' %}"></script>
     <script src="{% static 'network/js/editReply.js' %}"></script>
+    <script src="{% static 'network/js/infiniteScroll.js' %}"></script>
     {% endblock %}

@@ -157,6 +157,9 @@ textarea:not(:focus) {
 }
 
 /*Animating the addition of a reply to html without reloading the page (reply.js)*/
+.transition-width {
+  transition: width 1s;
+}
 
 .animate-prepend {
   opacity: 0;

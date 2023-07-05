@@ -20,28 +20,62 @@ document.addEventListener('DOMContentLoaded', () => {
     //replyTextArea.style.display = 'none';
     const replyHeader = document.querySelector('.reply-header');
     replyHeader.style.display = 'none';
+    replyHeader.style.width = '0px';
+    
+    // Get the username and display 'replying to username'
+    const username = replyButton.dataset.postUsername;
+
+
+    /// NOTE: ALL THE FOLLOWING BEFORE THE NEXT EVENT LISTENER COULD BE DONE
+    // DIRECTLY IN THE HTML
+    /* replyHeader.innerHTML = `replying to <span class="username">
+            <a href="/user/${username}"> @${username}</a></span>`;*/
+    
+
+    const span = document.createElement('span');
+    const usernameLink = document.createElement('a');
+    
+    // Set the class for the span
+    span.classList.add('username');
+    
+    // Set the href attribute and inner text for the username link
+
+    usernameLink.href = `/user/${username}`;
+    usernameLink.innerText = `@${username}`;
+    
+    // Create the "replying to" text element
+    const replyingToText = document.createTextNode('replying to ');
+    // Append the username link to the span
+    span.appendChild(usernameLink);
+    // Append the replying to text to the replyHeader
+    replyHeader.appendChild(replyingToText);
+    // Append the span to the replyHeader
+    replyHeader.appendChild(span);        
+    
+
+    
+    usernameLink.addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent the default navigation behavior
+        window.location.href = usernameLink.href; // Navigate to the specified link
+    });
+
+
 
     replyTextArea.addEventListener('focus', function () {
-        // Get the username and display 'replying to username'
-        const username = replyButton.dataset.postUsername;
-        replyHeader.innerHTML = `replying to <span class="username">
-                <a href="/user/${username}"> @${username}</a></span>`;
-        replyHeader.style.display ='block';
-
-        // Add an event listener to the anchor tag
-        const anchorTag = replyHeader.querySelector('a');
-        anchorTag.addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent the default navigation behavior
-            const href = anchorTag.getAttribute('href');
-            window.location.href = href; // Navigate to the specified link
-        });
+      replyHeader.style.display = 'none';
+      replyHeader.style.width = '0px';
+     replyHeader.style.transition= 'display 2s width 1s';
+     setTimeout(() => {replyHeader.style.display ='block';
+     replyHeader.style.width = 'auto';}, 10);
+      
     });
 
     replyTextArea.addEventListener('blur', function () {
-        replyHeader.innerHTML = '';
         setTimeout(() => {
+            replyHeader.style.width ='0px';
             replyHeader.style.display ='none';
-            }, 300);
+            
+            }, 1000);
         
 
     });
@@ -83,6 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
         replyPost(replyButton.dataset.postId, replyTextArea.value, document.querySelector(".reply-section"));
         disableButton(replyButton);
         replyTextArea.value = '';
+        replyTextArea.style.height = 'auto';
         progressBar.style.background = `conic-gradient(
             #4d5bf9 ${0 * 3.6}deg,
             #cadcff ${0 * 3.6}deg
@@ -140,6 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
                 replySection.parentElement.querySelector('.user-reply').prepend(newReply);
+                newReply.scrollIntoView({ behavior: "smooth"});
                 
                 // Apply the CSS class to trigger the animation
                 newReply.classList.add('animate-prepend');
@@ -318,10 +354,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                     
         
-                const replySection = editSection.parentElement.querySelector('.reply-section');
+                
                 if (textarea.style.display === 'none') {
                     textarea.textContent = textarea.dataset.value;
                     textarea.style.display = 'block';
+                    editButtonInEditSection.scrollIntoView({ behavior: "smooth"});
                     textarea.style.height = '0px';
                     textarea.style.width = '0px';
                     textarea.style.transition = 'height 2s, width 2s';
@@ -334,6 +371,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
                     } else {
                         // Hiding the textarea
+                    replySection.scrollIntoView({ behavior: "smooth"});
                     textarea.style.height = '0px';
                     textarea.style.width = '0px';
                     //textarea.style.transition = 'height 2s, width 2s';
@@ -422,5 +460,16 @@ function likeReply(button, replyId) {
     .catch(error => console.log(error));
 }
 
+
+// Will work on preserving the text format another day.
+function preserveFormat(text){
+  // Replace line breaks with <br> tags
+  text = text.replace(/\n/g, '<br>');
+
+  // Replace multiple spaces with non-breaking spaces
+  text = text.replace(/ {2,}/g, function (match) {
+    return '&nbsp;'.repeat(match.length);
+  });
+}
 
 parseReplies();

@@ -21,6 +21,7 @@ urlpatterns = [
     path('modify_post/<int:post_id>', views.modify_post, name='modify_post'),
     path('modify_reply/<int:reply_id>', views.modify_reply, name='modify_reply'),
     path('post/<int:post_id>', views.post, name='post'),
+    path('post/<int:post_id>/<int:is_fetching>/<int:page_num>', views.post, name='post'),
     path('post/reply_post/<int:post_id>', views.reply_post, name='reply_post'),
     path('like_unlike_reply/<int:reply_id>', views.like_unlike_reply, name='like_unlike_reply')
 ]
