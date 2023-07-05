@@ -166,9 +166,15 @@ textarea:not(:focus) {
   transition: opacity 2s ease-out, height 2s ease-out, padding 2s ease-out, display 2s ease-in-out;
 }
 
+/* edit textarea animation */
+.animate-ta {
+  transition: height 0.3s, width 0.3s;
+}
+
 .hide {
   opacity: 0;
   height: 0;
   padding: 0;
   display: none;
+  max-height: 0;
 }

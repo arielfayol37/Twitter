@@ -3,8 +3,10 @@ function parseReplies(){
 document.addEventListener('DOMContentLoaded', () => {
     // 
     const replyTextArea = document.querySelector('.textarea-reply');
-    const editTextArea = document.querySelector('.textarea-edit');
-    //editTextArea.style.display = 'none';
+    const postReplyCount = document.querySelector('.post-reply-count');
+    // Will be used to update the number of replies to a post, whenever the user
+    // replies to the post
+    
     const maxLength = 280; // A tikt's max number of characters. Should be same for new post in
                             // in the form class.
     const replyButton = document.querySelector('.reply-btn');
@@ -149,13 +151,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => {
                 newReply.classList.remove('animate-prepend', 'show');
                 }, 3000);
-                
+                /* This was to make the edit section disappear
                 setTimeout(() => {
                     newReply.querySelector('.edit-section').classList.add('hide');
                     //newReply.querySelector('.edit-section').style.display = 'none';
 
                     }, 10000);
+
+                */
                     }
+                
+                    
+                postReplyCount.textContent = `${parseInt(postReplyCount.textContent) + 1}`;
         })
         .catch(error => console.log(error));
     }
@@ -208,11 +215,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const justP = document.createElement('p');
             const likeCountSpanInP = document.createElement('span');
             likeCountSpanInP.classList.add('rlike-count');
-            likeCountSpanInP.textContent = data.replyNumLikes;
+            likeCountSpanInP.textContent = data.replyNumLikes + ' ';
 
             const likeButtonSpanInP = document.createElement('span');
             likeButtonSpanInP.classList.add('rlike-button');
             likeButtonSpanInP.setAttribute('data-reply-id', data.replyId);
+
+            
             
             const heartIconInLikeButtonSpan = document.createElement('i');
             heartIconInLikeButtonSpan.classList.add('heart-icon', 'far', 'fa-heart');
@@ -221,13 +230,29 @@ document.addEventListener('DOMContentLoaded', () => {
             justP.appendChild(likeCountSpanInP);
             justP.appendChild(likeButtonSpanInP);
 
+            // Has to be in this order because the justP will be used
+            // in the likeReply. I've tried to put this eventListener before
+            // and it doesn't work.
+            likeButtonSpanInP.addEventListener('click', () => {
+                likeReply(likeButtonSpanInP, data.replyId);
+              });
 
             const replyButton = document.createElement('a');
             replyButton.classList.add('reply-icon');
             replyButton.href = '#';
+            
             const replyIcon = document.createElement('i');
             replyIcon.classList.add('fa', 'fa-reply');
+
+            const replyCountSpanInP = document.createElement('span');
+            replyCountSpanInP.classList.add('reply-reply-count');
+            replyCountSpanInP.textContent = ' ' + data.numReplies + ' '; // This is to make
+            // the display identical to other already loaded replies.
             replyButton.appendChild(replyIcon);
+            const replyTextP = document.createElement('span');
+            replyTextP.textContent = 'Reply'
+            replyButton.appendChild(replyTextP);
+            justP.appendChild(replyCountSpanInP);
             justP.appendChild(replyButton);
 
             const timestampP = document.createElement('p');
@@ -249,6 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const textarea = document.createElement('textarea');
             textarea.classList.add('textarea-edit');
             textarea.setAttribute('value', data.replyContent);
+            textarea.style.display = 'none';
             editDiv2.appendChild(textarea);
 
             editSection.appendChild(editDiv);
@@ -264,5 +290,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 };
+
+ // Function to get CSRF token from cookies
+ function getCookie(name) {
+    if (!document.cookie) {
+      return null;
+    }
+
+    const csrfCookie = document.cookie
+      .split(';')
+      .map(c => c.trim())
+      .find(c => c.startsWith(name + '='));
+
+    if (!csrfCookie) {
+      return null;
+    }
+
+    return decodeURIComponent(csrfCookie.split('=')[1]);
+  }
+// Functions to handle like/unlike reply/ Tried to import from likeReply.js but doesn't work
+function likeReply(button, replyId) {
+    fetch(`/like_unlike_reply/${replyId}`, {
+      method: 'POST',
+      headers: { 'X-CSRFToken': getCookie('csrftoken') },
+    })
+      .then(response => response.json())
+      .then(data => {
+          if (data.liked) {
+              button.innerHTML = '<i class="heart-icon fas fa-heart liked"></i>';
+          
+            } else {
+              button.innerHTML = '<i class="heart-icon far fa-heart"></i>';
+      
+            }
+    
+
+        const likeCountElement = button.parentNode.querySelector('.rlike-count');
+        likeCountElement.innerHTML = data.count;
+      })
+      .catch(error => console.log(error));
+  }
+
+
 
 parseReplies();

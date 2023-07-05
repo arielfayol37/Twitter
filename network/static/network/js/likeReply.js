@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   
-    // Functions to handle like/unlike post
+    // Functions to handle like/unlike reply
     function likeReply(button, replyId) {
       fetch(`/like_unlike_reply/${replyId}`, {
         method: 'POST',

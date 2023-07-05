@@ -54,6 +54,8 @@ class Reply(models.Model):
             return f"{self.user.username} replied to {self.parent_reply}"
     def num_likes(self):
         return self.likes.count()
+    def num_replies(self):
+        return self.replies.count()
     
 class LikeReply(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

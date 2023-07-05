@@ -10,6 +10,7 @@
     </div>
     {% if user.is_authenticated %}
         <p>
+            
             <span class="rlike-count">{{ reply.num_likes }}</span>
             <span class="rlike-button" data-reply-id="{{ reply.id }}" >
                 {% if reply in user.liked_replies.all %}
@@ -19,7 +20,7 @@
                 {% endif %}
             </span>
             
-            
+            <span class="reply-reply-count">{{ reply.num_replies }}</span>
             <a href="#" class="reply-icon">
                 <i class="fa fa-reply"></i> Reply
             </a>
@@ -34,7 +35,7 @@
     {% if user == reply.user %}
     <div class="edit-section">{% csrf_token %}
         <div><button class="btn btn-primary edit-btn" data-reply-id="{{ reply.id}}">Edit</button></div>
-        <div><textarea class="textarea-edit" value="{{ reply.content }}"></textarea></div>    
+        <div><textarea class="textarea-edit" data-value="{{ reply.content }}"></textarea></div>    
     </div>
     {% endif %}   
 </li>

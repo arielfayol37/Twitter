@@ -338,11 +338,12 @@ def reply_post(request, post_id):
                 # 'replyImageUrl': reply.image.url, For later, in case there will be images for replies
                 'userIsAuthenticated':True,
                 'replyInUserLikedReplies':False,
-                'replyNumLikes': 0,
+                'replyNumLikes': 0, # when someone just posts, there are no likes yet. same for replies
                 'replyTimestamp': 'Just now',
                 'userIsReplyUser': True,
                 # 'csrfToken': csrf.get_token(request), may use this later
-                'replyContent': content
+                'replyContent': content,
+                'numReplies': 0,
             }
 
             return JsonResponse(context)
@@ -373,7 +374,7 @@ def modify_reply(request, reply_id):
             return JsonResponse({'success': True})
         except Post.DoesNotExist:
             # Return a JSON response indicating the failure
-            return JsonResponse({'success': False, 'error': 'Post not found'})
+            return JsonResponse({'success': False, 'error': 'Reply not found'})
     
     # Return a JSON response indicating the incorrect HTTP method
     return JsonResponse({'success': False, 'error': 'Invalid request method'})

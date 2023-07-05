@@ -22,7 +22,7 @@
             </span>
             
             </div>
-            <span class="like-count">{{ post.num_replies }}</span>
+            <span class="post-reply-count">{{ post.num_replies }}</span>
             <a href="#" class="reply-icon">
                 <i class="fa fa-reply" href="{% url 'network:post' post_id=post.id %}"></i> Reply
             </a>
@@ -36,8 +36,8 @@
     </div>
     {% if user == post.user %}
     <div class="edit-section">{% csrf_token %}
-        <div><button class="btn btn-primary edit-btn" data-post-id="{{ post.id}}">Edit</button></div>
-        <div><textarea class="textarea-edit" value="{{ post.content }}"> {{ post.content }}</textarea></div>    
+        <div><button class="btn btn-primary edit-btn po" data-post-id="{{ post.id}}">Edit</button></div>
+        <div><textarea class="textarea-edit" data-value="{{ post.content }}"></textarea></div>    
     </div>
     {% endif %}   
 </li>
