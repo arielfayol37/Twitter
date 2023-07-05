@@ -36,11 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const replySection = editSection.parentElement.querySelector('.reply-section');
         if (textArea.style.display === 'none') {
-            /*
-            replySection.style.display = 'none';
-            replySection.style.height = '0px';
-            replySection.style.opacity = '0';
-            */
             textArea.textContent = textArea.dataset.value;
             textArea.style.display = 'block';
             textArea.style.height = '0px';
@@ -67,16 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const content = textArea.value;
             setTimeout(() => {
                 textArea.style.display = 'none';
-                replySection.style.height = '0px';
-                replySection.style.opacity = '0';
-                replySection.style.transition = 'height 3s, opacity 3s';
-                setTimeout(()=>{
-                    replySection.style.display = 'block';
-                    replySection.style.height = 'auto';
-                    replySection.style.opacity = '1';
-                }, 10);
-                
-                console.log('Imma really trying!');
                 button.textContent = 'Edit';
             }, 1600);
 
