@@ -1,7 +1,15 @@
 <!--post_display.html-->
 <li class="post-li" data-post-id="{{ post.id }}">
     <div class="post-section">
-    <a class="user-link il" href="{% url 'network:profile' username=post.user.username%}"><strong>{{ post.user.username }}</strong></a>
+        <a class="user-link il" href="{% url 'network:profile' username=post.user.username%}">
+          <span class="profile-image-container">
+            {% if post.user.profile_picture %}
+                <img src="{{ post.user.profile_picture.url }}" alt="Profile Image" class="profile-image">
+            {% endif %}
+          </span>
+         
+          <strong>{{ post.user.username }}</strong>
+       </a>
     <p class="p-content">{{ post.content }}</p>
     <div class="image-container">
         {% if post.image %}
@@ -35,7 +43,7 @@
     <p class="timestamp">{{ post.timestamp|timesince }} ago</p>
     </div>
     {% if user == post.user %}
-    <div class="edit-section">{% csrf_token %}
+    <div class="edit-section il">{% csrf_token %}
         <div><button class="btn btn-primary edit-btn po" data-post-id="{{ post.id}}">Edit</button></div>
         <div><textarea class="textarea-edit" data-value="{{ post.content }}"></textarea></div>    
     </div>

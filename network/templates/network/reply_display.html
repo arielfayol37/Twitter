@@ -1,7 +1,14 @@
 <!--network: reply_display.html-->
 <li class="reply-li" data-reply-id="{{ reply.id }}">
     <div class="reply-section">
-    <a class="user-link" href="{% url 'network:profile' username=reply.user.username%}"><strong>{{ reply.user.username }}</strong></a>
+    <a class="user-link" href="{% url 'network:profile' username=reply.user.username%}">
+        <span class="profile-image-container">
+            {% if reply.user.profile_picture %}
+                <img src="{{ reply.user.profile_picture.url }}" alt="Profile Image" class="profile-image">
+            {% endif %}
+        </span>
+        <strong>{{ reply.user.username }}</strong>
+    </a>
     <p class="r-content">{{ reply.content }}</p>
     <div class="image-container">
         {% if reply.image %}

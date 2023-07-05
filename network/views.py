@@ -139,11 +139,19 @@ def profile(request, username):
     page = paginator.get_page(page_number)
     is_following = profile_user.followers.filter(user=request.user).exists()
 
+    if request.method == 'POST':
+        form = ProfilePictureForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+    else:
+        form = ProfilePictureForm(instance=request.user)
+
     context = {
         'page': page,
         'posts': posts,
         'profile_user': profile_user,
-        'is_following': bool(is_following)
+        'is_following': bool(is_following),
+        'form': form
     }
     return render(request, 'network/profile.html', context)
     
@@ -327,7 +335,11 @@ def reply_post(request, post_id):
             content = data.get('content')
             reply.content = content
             reply.save()
-
+            hasProfilePic = bool(reply.user.profile_picture)
+            if hasProfilePic:
+                profilePicUrl = reply.user.profile_picture.url
+            else:
+                profilePicUrl = None
             # Return JSON response with the info normally used to render
             # reply_display.html. This is will be used by reply.js
             context = {
@@ -344,6 +356,9 @@ def reply_post(request, post_id):
                 # 'csrfToken': csrf.get_token(request), may use this later
                 'replyContent': content,
                 'numReplies': 0,
+                'hasProfilePic':hasProfilePic,
+                'profilePicUrl':profilePicUrl
+
             }
 
             return JsonResponse(context)

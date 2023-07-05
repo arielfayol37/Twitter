@@ -2,7 +2,7 @@
 from django import forms
 from django.core.validators import MaxLengthValidator   
 # import the required models
-from .models import Post, Reply
+from .models import Post, Reply, User
    
 # create a ModelForm
 class newPostForm(forms.ModelForm):
@@ -23,3 +23,9 @@ class newReplyForm(forms.ModelForm):
     class Meta:
         model = Reply
         fields = ['content', 'image']  # Include the 'image' field in the form
+
+class ProfilePictureForm(forms.ModelForm):
+    profile_picture = forms.ImageField(required=False, widget=forms.FileInput(attrs={'placeholder': 'Choose Profile'}))
+    class Meta:
+        model = User
+        fields = ['profile_picture']

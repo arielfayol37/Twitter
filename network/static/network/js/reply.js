@@ -191,6 +191,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const userLink = document.createElement('a');
             userLink.classList.add('user-link');
             userLink.href = data.userLink;
+
+            const spanInA = document.createElement('span');
+            spanInA.classList.add('profile-image-container');
+
+            if (data.hasProfilePic){
+              spanInA.innerHTML = `<img src="${data.profilePicUrl}" 
+              alt="Profile Image" class="profile-image">`;
+            }
+            userLink.appendChild(spanInA);
             const username = document.createElement('strong');
             username.textContent = data.replyUsername;
             userLink.appendChild(username);
@@ -287,7 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Get the associated text area
                 
                 textarea.addEventListener('input', function () {
-                    if (parseInt(textarea.style.height) > 200) {
+                    if (maxLength > 300) {
                         textarea.style.height = 'auto';
                         textarea.style.height = textarea.scrollHeight + 'px';
                       }

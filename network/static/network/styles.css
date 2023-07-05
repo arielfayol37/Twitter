@@ -16,6 +16,13 @@
   cursor: pointer;
   margin-left: 3%;
 }  
+
+/*------Profile Picture-----*/
+.profile-image {
+  height: 20px;
+  border-radius: 50%;
+}
+
   .np {
     margin:10px;
   }

@@ -3,7 +3,13 @@
 {% extends 'network/layout.html' %}
 {% block body %}
     <div class="profile-info">
-        <h1> @{{ profile_user.username }}</h1>
+        
+        <span class="profile-image-container">
+            {% if profile_user.profile_picture %}
+                <img src="{{ profile_user.profile_picture.url }}" alt="Profile Image" class="profile-image">
+            {% endif %}
+        </span>
+        <h1 style="display: inline;"> @{{ profile_user.username }}</h1>
         <p>Followers: <strong class="followers-count">{{ profile_user.followers.count }}</strong></p>
         <p>Following: <strong class="following-count">{{ profile_user.following.count }}</strong></p>
         {% if  user.is_authenticated %}
@@ -13,6 +19,14 @@
                 {% else %}
                     <button class="follow-button btn btn-primary" data-username="{{ profile_user.username }}">Follow</button>
                 {% endif %}
+            {% else %}
+                <!--Insert modify profile pic here-->
+                <h4>Change Profile Picture</h4>
+               <form method="post" enctype="multipart/form-data">
+                     {% csrf_token %}
+                    {{ form.profile_picture }}
+              <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
             {% endif %}
         {% endif %}
     </div>
