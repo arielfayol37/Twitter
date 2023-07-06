@@ -46,7 +46,8 @@ def post(request, post_id, is_fetching=False, page_num=-1):
     paginator = Paginator(replies, 10)
     if is_fetching == 1:
         page = paginator.get_page(page_num)
-        return JsonResponse({'page': [reply.serialize_reply() for reply in page], 'page_has_next':page.has_next()})
+        return JsonResponse({'page': [reply.serialize_reply() for reply in page], 
+                             'next_page_number': page.next_page_number() if page.has_next() else -1})
     elif is_fetching == 0:
         # Get the current page number from the request's GET parameters
         page_number = request.GET.get('page', 1)

@@ -1,20 +1,26 @@
 const currentUser = document.querySelector(".current-user");
 const spanPageNumber = document.querySelector(".page-number");
 const divReplies = document.querySelector(".replies");
+let pagefetch = parseInt(spanPageNumber.dataset.pageNumber);
+
 document.addEventListener("DOMContentLoaded", () => {
 
-    
-    
+    let previousFetch = 0;
     const postId = document.querySelector('.post-li').dataset.postId;
     // If the user has scrolled to the bottom of the page:
     window.addEventListener('scroll', function() {
        // if (isUserAtBottom()) {
-        if(window.innerHeight + window.scrollY >= (document.body.offsetHeight-10)){
+        if(window.innerHeight + window.scrollY >= (document.body.offsetHeight-70)){
           // User has reached the bottom of the page
           // Fetch more posts and modify page number in fetchMoreReplies()
           //console.log('User reached the bottom of the page');
-          const pagenum = spanPageNumber.dataset.pageNumber
-          if (!(pagenum == -1)){fetchMoreReplies(postId, pagenum);}
+          //var pagenum = spanPageNumber.dataset.pageNumber
+          
+          if (pagefetch > previousFetch){
+            previousFetch = pagefetch;            
+            fetchMoreReplies(postId, pagefetch);
+          
+          }
           
 
           // TODO: Add event listeners to the edit buttond of the new replies
@@ -37,11 +43,9 @@ function appendFetchedRepliesToHtml(data){
       divReplies.appendChild(replyElement);
 
     });
-    if (data.page_has_next){spanPageNumber.setAttribute("data-page-number", spanPageNumber.dataset.pageNumber +
-    1);}else {
-      spanPageNumber.setAttribute("data-page-number", -1);
-    }
-
+    pagefetch = parseInt(data.next_page_number);
+    spanPageNumber.setAttribute("data-page-number", data.next_page_number);
+  
     //console.log('Added Fetched Replied to HTML')
 }
 

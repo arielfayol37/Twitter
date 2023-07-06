@@ -1,6 +1,9 @@
+
+
+
 .post-li {
     padding: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 2px;
     border: 1px solid #ccc;
     background-color: #f9f9f9;
     list-style: none;
@@ -8,13 +11,17 @@
   }
 
 .reply-li {
+  position: relative;
   padding: 10px;
   border: 1px solid #eaeaea;
+  border-top: 1px solid rgba(0,0,0,0.3);
   background-color: #f7f7f7;
-  margin-top: 10px;
+  border-radius: 7px;
+  margin-top: 2px;
   list-style: none;
   cursor: pointer;
-  margin-left: 3%;
+  margin-left: 1%;
+  margin-right: 0.5%;
 }  
 
 /*------Profile Picture-----*/
@@ -72,6 +79,9 @@
   left: 30%;
   height:max-content;
   bottom: 5%;
+  z-index: 3; /*Commit after 9:54pm on 07/05/2023 made the reply area
+  disappear when scrolling. This is hack fix, too lazy to track what 
+  happened, and it won't even impact much, or so I think*/
 }
 .reply-header {
   font-family: Arial, sans-serif;
@@ -187,4 +197,30 @@ textarea:not(:focus) {
   padding: 0;
   display: none;
   max-height: 0;
+}
+
+
+
+
+
+/* ------ Attempt to Hide Scroll Bar ------ */
+
+
+
+
+
+/* Hide scrollbar for Chrome, Safari, and Opera */
+body::-webkit-scrollbar {
+  display: none;
+  width: 0.5em;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #555;
+}
+
+/* Hide scrollbar for Firefox */
+/* Note: Firefox currently does not support styling the scrollbar */
+html {
+  scrollbar-width: none;
 }
